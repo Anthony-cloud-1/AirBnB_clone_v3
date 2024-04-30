@@ -35,24 +35,24 @@ class HBNBCommand(cmd.Cmd):
 
     def _key_value_parser(self, args):
         """creates a dictionary from a list of strings"""
-        new_dict = {}
+        n_dict = {}
         for arg in args:
             if "=" in arg:
                 kvp = arg.split('=', 1)
-                key = kvp[0]
-                value = kvp[1]
-                if value[0] == value[-1] == '"':
-                    value = shlex.split(value)[0].replace('_', ' ')
+                k = kvp[0]
+                val = kvp[1]
+                if val[0] == val[-1] == '"':
+                    val = shlex.split(val)[0].replace('_', ' ')
                 else:
                     try:
-                        value = int(value)
+                        val = int(val)
                     except:
                         try:
-                            value = float(value)
+                            val = float(val)
                         except:
                             continue
-                new_dict[key] = value
-        return new_dict
+                n_dict[k] = val
+        return n_dict
 
     def do_create(self, arg):
         """Creates a new instance of a class"""
@@ -61,13 +61,13 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
             return False
         if args[0] in classes:
-            new_dict = self._key_value_parser(args[1:])
-            instance = classes[args[0]](**new_dict)
+            n_dict = self._key_value_parser(args[1:])
+            inst = classes[args[0]](**n_dict)
         else:
             print("** class doesn't exist **")
             return False
-        print(instance.id)
-        instance.save()
+        print(inst.id)
+        inst.save()
 
     def do_show(self, arg):
         """Prints an instance as a string based on the class and id"""
@@ -77,9 +77,9 @@ class HBNBCommand(cmd.Cmd):
             return False
         if args[0] in classes:
             if len(args) > 1:
-                key = args[0] + "." + args[1]
-                if key in models.storage.all():
-                    print(models.storage.all()[key])
+                k = args[0] + "." + args[1]
+                if k in models.storage.all():
+                    print(models.storage.all()[k])
                 else:
                     print("** no instance found **")
             else:
@@ -94,9 +94,9 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
         elif args[0] in classes:
             if len(args) > 1:
-                key = args[0] + "." + args[1]
-                if key in models.storage.all():
-                    models.storage.all().pop(key)
+                k = args[0] + "." + args[1]
+                if k in models.storage.all():
+                    models.storage.all().pop(k)
                     models.storage.save()
                 else:
                     print("** no instance found **")
@@ -108,18 +108,18 @@ class HBNBCommand(cmd.Cmd):
     def do_all(self, arg):
         """Prints string representations of instances"""
         args = shlex.split(arg)
-        obj_list = []
+        o_list = []
         if len(args) == 0:
-            obj_dict = models.storage.all()
+            o_dict = models.storage.all()
         elif args[0] in classes:
-            obj_dict = models.storage.all(classes[args[0]])
+            o_dict = models.storage.all(classes[args[0]])
         else:
             print("** class doesn't exist **")
             return False
-        for key in obj_dict:
-            obj_list.append(str(obj_dict[key]))
+        for key in o_dict:
+            o_list.append(str(o_dict[key]))
         print("[", end="")
-        print(", ".join(obj_list), end="")
+        print(", ".join(o_list), end="")
         print("]")
 
     def do_update(self, arg):
@@ -132,8 +132,8 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
         elif args[0] in classes:
             if len(args) > 1:
-                k = args[0] + "." + args[1]
-                if k in models.storage.all():
+                key = args[0] + "." + args[1]
+                if key in models.storage.all():
                     if len(args) > 2:
                         if len(args) > 3:
                             if args[0] == "Place":
@@ -147,8 +147,8 @@ class HBNBCommand(cmd.Cmd):
                                         args[3] = float(args[3])
                                     except:
                                         args[3] = 0.0
-                            setattr(models.storage.all()[k], args[2], args[3])
-                            models.storage.all()[k].save()
+                            setattr(models.storage.all()[key], args[2], args[3])
+                            models.storage.all()[key].save()
                         else:
                             print("** value missing **")
                     else:
