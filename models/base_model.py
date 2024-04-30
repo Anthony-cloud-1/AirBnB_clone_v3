@@ -29,9 +29,9 @@ class BaseModel:
     def __init__(self, *args, **kwargs):
         """Initialization of the base model"""
         if kwargs:
-            for key, value in kwargs.items():
-                if key != "__class__":
-                    setattr(self, key, value)
+            for k, val in kwargs.items():
+                if k != "__class__":
+                    setattr(self, k, val)
             if kwargs.get("created_at", None) and type(self.created_at) is str:
                 self.created_at = datetime.strptime(kwargs["created_at"], time)
             else:
@@ -60,23 +60,23 @@ class BaseModel:
 
     def to_dict(self):
         """returns a dictionary containing all keys/values of the instance"""
-        new_dict = self.__dict__.copy()
-        if "created_at" in new_dict:
-            new_dict["created_at"] = new_dict["created_at"].strftime(time)
-        if "updated_at" in new_dict:
-            new_dict["updated_at"] = new_dict["updated_at"].strftime(time)
-        new_dict["__class__"] = self.__class__.__name__
-        if "_sa_instance_state" in new_dict:
-            del new_dict["_sa_instance_state"]
+        n_dict = self.__dict__.copy()
+        if "created_at" in n_dict:
+            n_dict["created_at"] = n_dict["created_at"].strftime(time)
+        if "updated_at" in n_dict:
+            n_dict["updated_at"] = n_dict["updated_at"].strftime(time)
+        n_dict["__class__"] = self.__class__.__name__
+        if "_sa_instance_state" in n_dict:
+            del n_dict["_sa_instance_state"]
         frame = inspect.currentframe().f_back
-        func_name = frame.f_code.co_name
+        funct_name = frame.f_code.co_name
         class_name = ''
         if 'self' in frame.f_locals:
             class_name = frame.f_locals["self"].__class__.__name__
-        is_fs_writing = func_name == 'save' and class_name == 'FileStorage'
-        if 'password' in new_dict and not is_fs_writing:
-            del new_dict['password']
-        return new_dict
+        is_fs_writing = funct_name == 'save' and class_name == 'FileStorage'
+        if 'password' in n_dict and not is_fs_writing:
+            del n_dict['password']
+        return n_dict
 
     def delete(self):
         """delete the current instance from the storage"""
